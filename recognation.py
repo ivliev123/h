@@ -37,7 +37,7 @@ a = face_base.a
 
 for i in range(len(a)):
     a[i][2]=get_face_descriptor(a[i][1])
-
+print(a)
 
 
 

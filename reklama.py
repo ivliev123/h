@@ -1,3 +1,7 @@
+
+#python3 reklama.py  -d 'da.pickle' -w 'ab'
+
+
 from skimage import io
 from imutils.video import VideoStream
 from imutils import face_utils
@@ -10,8 +14,15 @@ import time
 import dlib
 import cv2
 import datetime
+import pickle
 
-	
+
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-d', action="store", dest="doc")
+parser.add_argument('-w', action="store", dest="write")
+args = parser.parse_args()
 
 print("[INFO] loading facial landmark predictor...")
 detector = dlib.get_frontal_face_detector()
@@ -44,8 +55,13 @@ def rect_to_bb(rect):
 
 	return (x, y, w, h)
 
+def add_in_new(a):
+	new_array=[a[0],"none",a[8],a[9],a[12],0,False]
+	return new_array
 
 #a = face_base.a
+
+faceList_all=[]
 
 #в этот массив будет записываться база лиц за все время
 faceList=[]
@@ -56,6 +72,8 @@ faceCount=0
 
 #for i in range(len(a)):
 #    a[i][2]=get_face_descriptor(a[i][1])
+
+
 
 #запуск камеры
 print("[INFO] camera sensor warming up...")
@@ -75,19 +93,25 @@ while True:
 		#для каждого лица выполняем следующие действия 
 		for rect in rects:
 			
-			#shape_cam = predictor(gray, rect)
-			#shape = face_utils.shape_to_np(shape_cam)
+			shape_cam = predictor(gray, rect)
+			shape = face_utils.shape_to_np(shape_cam)
+			face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
         
 			(x, y, w, h) = face_utils.rect_to_bb(rect)
 			print("+++ В кадре детектировано новое лицо " +  str(faceCount))
 			
 			start =str( datetime.datetime.now())
 			finish = 0
-			facedata=[faceCount, x, y, w, h, True, False, 40, start , finish ]
+			facedata=[faceCount, x, y, w, h, True, False, 40, start , finish, False,False, face_descriptor,0 ]
+			
 			faceList.append(facedata)
+
+			#facedata_all=add_in_new(facedata)
+			
+			#faceList_all.append(facedata_all)
+
 			faceCount=faceCount+1
-			#print(faceCount)
-			cv2.imshow("Frame", frame)
+
 
 	#Сценарий 2
 	if(len(faceList)<=len(rects)):
@@ -124,16 +148,22 @@ while True:
 		i=0
 		for rect2 in rects:
 			if (not used[i]):
-				#shape_cam = predictor(gray, rect2)
-				#shape = face_utils.shape_to_np(shape_cam)
-        
+				shape_cam = predictor(gray, rect2)
+				shape = face_utils.shape_to_np(shape_cam)
+        			
+				face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
+				
 				(x, y, w, h) = face_utils.rect_to_bb(rect2)
 				print("+++ В кадре детектировано новое лицо "  	 +  str(faceCount))
 				
 				start =str( datetime.datetime.now())
 				#finish = 0
-				facedata=[faceCount, x, y, w, h, True, False, 40, start , 0 ]
+				facedata=[faceCount, x, y, w, h, True, False, 30, start , finish, False,False, face_descriptor, 0 ]
+
 				faceList.append(facedata)
+	
+				#facedata_all=add_in_new(facedata)
+
 				faceCount=faceCount+1
 			i=i+1
 
@@ -184,9 +214,15 @@ while True:
 				if (faceList[i][7]<0):
 					finish=str(datetime.datetime.now())
 					faceList[i][9]=finish
+					facedata_all=add_in_new(faceList[i])
+					#faceList_all.append(facedata_all)
+
+					#открываем файл на дозапись
+					with open(args.doc, args.write) as f:
+						pickle.dump(facedata_all, f)
 					faceList[i][6]=True
 			i=i+1
-		print(faceList)
+		#print(faceList)
 
 	i=0
 	for fdel in range(len(faceList) ):
@@ -205,32 +241,16 @@ while True:
 		cv2.putText(frame,str(faceList[i][0]),(xr,yr), font, 1,(255,0,0),1,cv2.LINE_AA)
 		i=i+1
 
-			#cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-			#прорисовка квадрата вокруг лица но нужно будет вырезать этот участок для занесания в базу
-			#roi = image[y:y + h, x:x + w]
-			#roi = imutils.resize(roi, width=250, inter=cv2.INTER_CUBIC)
 
-			#cv2.imwrite(index + ".jpg",roi)
-
-			#прорисовка точек лиц // не нужная функция
-			#for (x, y) in shape:
-			#    cv2.circle(frame, (x, y), 0, (0, 255, 255), -1)
-    
 	cv2.imshow("Frame", frame)
-     
-    #распознавание лиц и вывод имени в консоль       
-    #face_descriptor_cam= facerec.compute_face_descriptor(frame, shape_cam)
-    #for i in range(len(a)):
-    #    a[i][3]=distance.euclidean(a[i][2], face_descriptor_cam)
-    #minimym, index =index_min(a,4)
-    #if (minimym < 0.5):
-    #    print(a[index][0])
+
 
 	key = cv2.waitKey(1) & 0xFF
     
     # if the `q` key was pressed, break from the loop
 	if key == ord("q"):
-		print(faceList)
+		#print()
+		#print(faceList_all)
 		break
         # do a bit of cleanup
 		cv2.destroyAllWindows()
