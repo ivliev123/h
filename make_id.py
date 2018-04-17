@@ -1,4 +1,4 @@
-# python3 reklama.py  -f 'da.pickle' -m 'w' -t 'ID.txt'
+# python3 make_id.py  -f 'da.pickle' -m 'w' -t 'ID.txt'
 
 import pickle
 import argparse
@@ -26,8 +26,6 @@ with open(args["filefrom"], "rb") as f:
             array_data.append(pickle.load(f))
     except (EOFError, pickle.UnpicklingError):
         pass
-
-print(array_data)
 
 for i in range(len(array_data)):
 	if (i==0):
