@@ -1,7 +1,8 @@
 
-# python3 reklama.py  -f 'da.pickle' -m 'ab'
+#python3 reklama.py  -d 'da.pickle' -w 'ab'
 
-
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 from skimage import io
 from imutils.video import VideoStream
 from imutils import face_utils
@@ -17,6 +18,12 @@ import datetime
 import pickle
 
 
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-d', action="store", dest="doc")
+parser.add_argument('-w', action="store", dest="write")
+args = parser.parse_args()
 
 print("[INFO] loading facial landmark predictor...")
 detector = dlib.get_frontal_face_detector()
@@ -53,33 +60,40 @@ def add_in_new(a):
 	new_array=[a[0],"none",a[8],a[9],a[12],0,False]
 	return new_array
 
+#a = face_base.a
 
 faceList_all=[]
 
+#в этот массив будет записываться база лиц за все время
 faceList=[]
 
+#создаем пременную в которую будет записываться количество человек посмотревших, это число будет обновлться каждые сутки
 faceCount=0
 
 
-
-ap = argparse.ArgumentParser()
-ap.add_argument("-p", "--picamera", type=int, default=-1,
-	help="использование pi камеры")
-ap.add_argument("-f", "--file", type=str, default="",
-	help="выбор файла")
-ap.add_argument("-m", "--metod", type=str, default="ab",
-	help="выбор- открытие файла для чтения, записи, дозаписи")
-args = vars(ap.parse_args())
+#for i in range(len(a)):
+#    a[i][2]=get_face_descriptor(a[i][1])
 
 
 
-# initialize the video stream and allow the cammera sensor to warmup
-vs = VideoStream(usePiCamera=args["picamera"] > 0).start()
-time.sleep(2.0)
+#запуск камеры
+#print("[INFO] camera sensor warming up...")
+#vs = VideoStream(0).start()
+#time.sleep(2.0)
+
+camera = PiCamera()
+camera.resolution = (640, 480)
+camera.framerate = 32
+rawCapture = PiRGBArray(camera, size=(640, 480))
+ 
+# allow the camera to warmup
+time.sleep(0.1)
 
 
-while True:
-	frame = vs.read() 
+for image in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+	frame = image.array
+
+	#frame = vs.read() 
 	frame = imutils.resize(frame, width=600)
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     
@@ -216,7 +230,7 @@ while True:
 					#faceList_all.append(facedata_all)
 
 					#открываем файл на дозапись
-					with open(args["file"], args["metod"]) as f:
+					with open(args.doc, args.write) as f:
 						pickle.dump(facedata_all, f)
 					faceList[i][6]=True
 			i=i+1
@@ -244,11 +258,12 @@ while True:
 
 
 	key = cv2.waitKey(1) & 0xFF
-
-	# if the `q` key was pressed, break from the loop
+    
+    # if the `q` key was pressed, break from the loop
 	if key == ord("q"):
+		#print()
+		#print(faceList_all)
 		break
-
-# do a bit of cleanup
-cv2.destroyAllWindows()
-vs.stop()
+        # do a bit of cleanup
+		cv2.destroyAllWindows()
+		#vs.stop()
