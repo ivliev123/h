@@ -93,20 +93,22 @@ while True:
 			
 			shape_cam = predictor(gray, rect)
 			shape = face_utils.shape_to_np(shape_cam)
+
+			gor = np.sqrt( (shape[0][0] - shape[16][0])**2 + (shape[0][1] - shape[16][1])**2 )
+			vert = np.sqrt( (shape[8][0] - shape[27][0])**2 + (shape[8][1] - shape[27][1])**2 )
+			otn=gor/vert
+			#print(otn)
 			face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
         
 			(x, y, w, h) = face_utils.rect_to_bb(rect)
 			print("+++ В кадре детектировано новое лицо " +  str(faceCount))
 			
 			start =str( datetime.datetime.now())
+			start_c = time.time()
 			finish = 0
-			facedata=[faceCount, x, y, w, h, True, False, 40, start , finish, False,False, face_descriptor,0 ]
+			facedata=[faceCount, x, y, w, h, True, False, start_c, start , finish, False,False, face_descriptor,0,otn ]
 			
 			faceList.append(facedata)
-
-			#facedata_all=add_in_new(facedata)
-			
-			#faceList_all.append(facedata_all)
 
 			faceCount=faceCount+1
 
@@ -118,8 +120,18 @@ while True:
 		for f in range(len(faceList)):
 
 			i=0
-			rectangle_now=np.zeros((len(rects),6))
+			rectangle_now=np.zeros((len(rects),7))
+			rectangle_now_descr=[0]
 			for rect in rects:
+				shape_cam = predictor(gray, rect)
+				shape = face_utils.shape_to_np(shape_cam)
+
+				gor = np.sqrt( (shape[0][0] - shape[16][0])**2 + (shape[0][1] - shape[16][1])**2 )
+				vert = np.sqrt( (shape[8][0] - shape[27][0])**2 + (shape[8][1] - shape[27][1])**2 )
+				otn=gor/vert
+
+				face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
+
 				(x1, y1, w1, h1) = face_utils.rect_to_bb(rect)
 				x2=faceList[j][1]
 				y2=faceList[j][2]
@@ -130,6 +142,8 @@ while True:
 				rectangle_now[i][2]=w1
 				rectangle_now[i][3]=h1
 				rectangle_now[i][4]=d
+				rectangle_now[i][5]=otn
+				rectangle_now_descr[i]=face_descriptor
 				i=i+1
 			#поиск минимального расстояния
 			minimym, index = index_min(rectangle_now, 5)
@@ -138,7 +152,17 @@ while True:
 			faceList[j][2]=rectangle_now[index][1]
 			faceList[j][3]=rectangle_now[index][2]
 			faceList[j][4]=rectangle_now[index][3]
-			faceList[j][7]=40
+
+			if( time.time()-faceList[j][7]>0.5):
+				dist=distance.euclidean(faceList[j][12], rectangle_now_descr[index])
+				if (dist>=0.7):
+					faceList[j][6]=True
+
+			faceList[j][7]=time.time()
+			if (rectangle_now[index][5]>faceList[j][14]):
+				faceList[j][14]=rectangle_now[index][5]
+				faceList[j][12]=rectangle_now_descr[index]
+				print(faceList[j][14])
 			#помечаем что квадрат с таким номеров обработке и добавления в базу не нуждается
 			used[j]=True
 			j=j+1		
@@ -148,19 +172,23 @@ while True:
 			if (not used[i]):
 				shape_cam = predictor(gray, rect2)
 				shape = face_utils.shape_to_np(shape_cam)
-        			
+				#print(shape)
+        		
+				gor = np.sqrt( (shape[0][0] - shape[16][0])**2 + (shape[0][1] - shape[16][1])**2 )
+				vert = np.sqrt( (shape[8][0] - shape[27][0])**2 + (shape[8][1] - shape[27][1])**2 )
+				otn=gor/vert
+
 				face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
 				
 				(x, y, w, h) = face_utils.rect_to_bb(rect2)
 				print("+++ В кадре детектировано новое лицо "  	 +  str(faceCount))
 				
 				start =str( datetime.datetime.now())
-				#finish = 0
-				facedata=[faceCount, x, y, w, h, True, False, 30, start , finish, False,False, face_descriptor, 0 ]
+				start_c = time.time()
+				finish = 0
+				facedata=[faceCount, x, y, w, h, True, False, start_c, start , finish, False,False, face_descriptor, 0,otn ]
 
 				faceList.append(facedata)
-	
-				#facedata_all=add_in_new(facedata)
 
 				faceCount=faceCount+1
 			i=i+1
@@ -175,6 +203,16 @@ while True:
 			faceList[f1][5] = True
 		i=0
 		for rect3 in rects:
+			shape_cam = predictor(gray, rect3)
+			shape = face_utils.shape_to_np(shape_cam)
+
+			gor = np.sqrt( (shape[0][0] - shape[16][0])**2 + (shape[0][1] - shape[16][1])**2 )
+			vert = np.sqrt( (shape[8][0] - shape[27][0])**2 + (shape[8][1] - shape[27][1])**2 )
+			otn=gor/vert
+
+			face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
+
+
 			j=0
 			faceList_now=np.zeros((len(faceList),6))
 			for f in range(len(faceList)):
@@ -197,8 +235,11 @@ while True:
 			faceList[i][2]=faceList_now[index][1]
 			faceList[i][3]=faceList_now[index][2]
 			faceList[i][4]=faceList_now[index][3]
-			faceList[i][7]=40
-			
+			faceList[i][7]=time.time()
+			if (otn>faceList[i][14]):
+				faceList[i][14]=otn
+				faceList[i][12]=face_descriptor
+				#print(faceList[j][14])
 			#метка запрещающая изменения, объект подтвержден что он на экране
 			faceList[i][5] = False
 			i=i+1
@@ -208,8 +249,10 @@ while True:
 		i=0
 		for fd in range(len(faceList)):
 			if (faceList[i][5] != False):
-				faceList[i][7]=faceList[i][7]-1
-				if (faceList[i][7]<0):
+				naw_time = time.time()
+				d_t=naw_time-faceList[i][7]
+				
+				if (d_t>=2):
 					finish=str(datetime.datetime.now())
 					faceList[i][9]=finish
 					facedata_all=add_in_new(faceList[i])

@@ -27,6 +27,8 @@ with open(args["filefrom"], "rb") as f:
     except (EOFError, pickle.UnpicklingError):
         pass
 
+print(array_data)
+
 for i in range(len(array_data)):
 	if (i==0):
 		array_data[i][1]=0
@@ -42,7 +44,7 @@ for i in range(len(array_data)):
 			array_data[i+k+1][5]=dist
 
 			
-			if (dist<=0.5 	):
+			if (dist<=0.7 	):
 				array_data[k+i+1][1]=array_data[i][1]
 				print('ID',array_data[k+i+1][1])
 
