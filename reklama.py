@@ -121,7 +121,7 @@ while True:
 
 			i=0
 			rectangle_now=np.zeros((len(rects),7))
-			rectangle_now_descr=[0]
+			rectangle_now_descr=[0]*len(rects)
 			for rect in rects:
 				shape_cam = predictor(gray, rect)
 				shape = face_utils.shape_to_np(shape_cam)
@@ -266,10 +266,11 @@ while True:
 		#print(faceList)
 
 	i=0
-	for fdel in range(len(faceList) ):
-		if (faceList[i][6]==True):
+	while i < len(faceList):
+		if(faceList[i][6]==True):
 			del faceList[i]
-		i=i+1
+		else:
+			i +=1
 			
 	i=0
 	for rec in range(len(faceList)):
