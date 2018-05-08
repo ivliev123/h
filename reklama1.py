@@ -94,9 +94,9 @@ while True:
 			shape_cam = predictor(gray, rect)
 			shape = face_utils.shape_to_np(shape_cam)
 
-			gor = np.sqrt( (shape[0][0] - shape[16][0])**2 + (shape[0][1] - shape[16][1])**2 )
-			vert = np.sqrt( (shape[8][0] - shape[27][0])**2 + (shape[8][1] - shape[27][1])**2 )
-			otn=gor/vert
+			#gor = np.sqrt( (shape[0][0] - shape[16][0])**2 + (shape[0][1] - shape[16][1])**2 )
+			#vert = np.sqrt( (shape[8][0] - shape[27][0])**2 + (shape[8][1] - shape[27][1])**2 )
+			#otn=gor/vert
 			#print(otn)
 			face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
         
@@ -106,7 +106,8 @@ while True:
 			start =str( datetime.datetime.now())
 			start_c = time.time()
 			finish = 0
-			facedata=[faceCount, x, y, w, h, True, False, start_c, start , finish, False,False, face_descriptor,0,otn ]
+			facedata=[faceCount, x, y, w, h, True, False, start_c, start , finish, False,False, face_descriptor,0 ]
+			#facedata=[faceCount, x, y, w, h, True, False, start_c, start , finish, False,False, face_descriptor,0,otn ]
 			#print(x,y)
 			faceList.append(facedata)
 
@@ -121,16 +122,16 @@ while True:
 
 			i=0
 			rectangle_now=np.zeros((len(rects),7))
-			rectangle_now_descr=[0]*len(rects)
+			#rectangle_now_descr=[0]*len(rects)
 			for rect in rects:
-				shape_cam = predictor(gray, rect)
-				shape = face_utils.shape_to_np(shape_cam)
+				#shape_cam = predictor(gray, rect)
+				#shape = face_utils.shape_to_np(shape_cam)
 
-				gor = np.sqrt( (shape[0][0] - shape[16][0])**2 + (shape[0][1] - shape[16][1])**2 )
-				vert = np.sqrt( (shape[8][0] - shape[27][0])**2 + (shape[8][1] - shape[27][1])**2 )
-				otn=gor/vert
+				#gor = np.sqrt( (shape[0][0] - shape[16][0])**2 + (shape[0][1] - shape[16][1])**2 )
+				#vert = np.sqrt( (shape[8][0] - shape[27][0])**2 + (shape[8][1] - shape[27][1])**2 )
+				#otn=gor/vert
 
-				face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
+				#face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
 
 				(x1, y1, w1, h1) = face_utils.rect_to_bb(rect)
 				x2=faceList[j][1]
@@ -142,8 +143,8 @@ while True:
 				rectangle_now[i][2]=w1
 				rectangle_now[i][3]=h1
 				rectangle_now[i][4]=d
-				rectangle_now[i][5]=otn
-				rectangle_now_descr[i]=face_descriptor
+				#rectangle_now[i][5]=otn
+				#rectangle_now_descr[i]=face_descriptor
 				i=i+1
 			#поиск минимального расстояния
 			minimym, index = index_min(rectangle_now, 5)
@@ -154,17 +155,17 @@ while True:
 			faceList[j][4]=rectangle_now[index][3]
 
 			#проверка (если челове пропал на 0,5 с. выполнить проверку: тот ли это человек
-			if( time.time()-faceList[j][7]>0.5):
-				dist=distance.euclidean(faceList[j][12], rectangle_now_descr[index])
-				if (dist>=0.5):
-					faceList[j][6]=True
+			#if( time.time()-faceList[j][7]>0.5):
+			#	dist=distance.euclidean(faceList[j][12], rectangle_now_descr[index])
+			#	if (dist>=0.5):
+			#		faceList[j][6]=True
 
 			faceList[j][7]=time.time()
 			#запись более точного дескриптора лица
-			if (rectangle_now[index][5]>faceList[j][14]):
-				faceList[j][14]=rectangle_now[index][5]
-				faceList[j][12]=rectangle_now_descr[index]
-				print(faceList[j][14])
+			#if (rectangle_now[index][5]>faceList[j][14]):
+			#	faceList[j][14]=rectangle_now[index][5]
+			#	faceList[j][12]=rectangle_now_descr[index]
+			#	print(faceList[j][14])
 			#помечаем что квадрат с таким номеров обработке и добавления в базу не нуждается
 			used[j]=True
 			j=j+1		
@@ -174,11 +175,10 @@ while True:
 			if (not used[i]):
 				shape_cam = predictor(gray, rect2)
 				shape = face_utils.shape_to_np(shape_cam)
-				#print(shape)
         		
-				gor = np.sqrt( (shape[0][0] - shape[16][0])**2 + (shape[0][1] - shape[16][1])**2 )
-				vert = np.sqrt( (shape[8][0] - shape[27][0])**2 + (shape[8][1] - shape[27][1])**2 )
-				otn=gor/vert
+				#gor = np.sqrt( (shape[0][0] - shape[16][0])**2 + (shape[0][1] - shape[16][1])**2 )
+				#vert = np.sqrt( (shape[8][0] - shape[27][0])**2 + (shape[8][1] - shape[27][1])**2 )
+				#otn=gor/vert
 
 				face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
 				
@@ -188,7 +188,8 @@ while True:
 				start =str( datetime.datetime.now())
 				start_c = time.time()
 				finish = 0
-				facedata=[faceCount, x, y, w, h, True, False, start_c, start , finish, False,False, face_descriptor, 0,otn ]
+				facedata=[faceCount, x, y, w, h, True, False, start_c, start , finish, False,False, face_descriptor,0 ]
+				#facedata=[faceCount, x, y, w, h, True, False, start_c, start , finish, False,False, face_descriptor, 0,otn ]
 
 				faceList.append(facedata)
 
@@ -205,14 +206,14 @@ while True:
 			faceList[f1][5] = True
 		i=0
 		for rect3 in rects:
-			shape_cam = predictor(gray, rect3)
-			shape = face_utils.shape_to_np(shape_cam)
+			#shape_cam = predictor(gray, rect3)
+			#shape = face_utils.shape_to_np(shape_cam)
 
-			gor = np.sqrt( (shape[0][0] - shape[16][0])**2 + (shape[0][1] - shape[16][1])**2 )
-			vert = np.sqrt( (shape[8][0] - shape[27][0])**2 + (shape[8][1] - shape[27][1])**2 )
-			otn=gor/vert
+			#gor = np.sqrt( (shape[0][0] - shape[16][0])**2 + (shape[0][1] - shape[16][1])**2 )
+			#vert = np.sqrt( (shape[8][0] - shape[27][0])**2 + (shape[8][1] - shape[27][1])**2 )
+			#otn=gor/vert
 
-			face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
+			#face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
 
 
 			j=0
@@ -238,9 +239,9 @@ while True:
 			faceList[i][3]=faceList_now[index][2]
 			faceList[i][4]=faceList_now[index][3]
 			faceList[i][7]=time.time()
-			if (otn>faceList[i][14]):
-				faceList[i][14]=otn
-				faceList[i][12]=face_descriptor
+			#if (otn>faceList[i][14]):
+			#	faceList[i][14]=otn
+			#	faceList[i][12]=face_descriptor
 				#print(faceList[j][14])
 			#метка запрещающая изменения, объект подтвержден что он на экране
 			faceList[i][5] = False
