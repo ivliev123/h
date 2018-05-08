@@ -1,6 +1,6 @@
 
 # python3 reklama.py  -f 'da.pickle' -m 'ab'
-
+# python3 reklama.py  -f 'da.pickle' -m 'ab' --picamera 1
 
 from skimage import io
 from imutils.video import VideoStream
@@ -107,7 +107,7 @@ while True:
 			start_c = time.time()
 			finish = 0
 			facedata=[faceCount, x, y, w, h, True, False, start_c, start , finish, False,False, face_descriptor,0,otn ]
-			
+			#print(x,y)
 			faceList.append(facedata)
 
 			faceCount=faceCount+1

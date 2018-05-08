@@ -44,7 +44,7 @@ for i in range(len(array_data)):
 			array_data[i+k+1][5]=dist
 
 			
-			if (dist<=0.7 	):
+			if (dist<=0.5 	):
 				array_data[k+i+1][1]=array_data[i][1]
 				print('ID',array_data[k+i+1][1])
 
