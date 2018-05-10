@@ -19,13 +19,16 @@ git clone https://github.com/ivliev123/h
 установка нужных для работы модулей
 
 sudo pip3 install scikit-image
+
 sudo pip3 install imutils
+
 sudo pip3 install opencv-python
 
 
 sudo apt-get install -y cmake
 
-установка dlib моет занять много времени
+установка dlib может занять много времени
+
 sudo pip3 install dlib
 
 pip3 install datetime
