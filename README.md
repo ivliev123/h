@@ -1,11 +1,17 @@
 # h
 
 sudo apt-get update
+
 sudo apt-get upgrade
+
 sudo apt install python-pip
+
 sudo apt install python3-pip
+
 sudo pip install --upgrade pip
+
 sudo pip3 install --upgrade pip
+
 sudo apt install git
 
 git clone https://github.com/ivliev123/h
