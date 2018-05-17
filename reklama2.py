@@ -23,6 +23,13 @@ predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat')  
 
 
+def get_face_descriptor(imge):    # from image
+    img = io.imread(imge)
+    dets = detector(img, 1)
+    for k, d in enumerate(dets):
+        shape = predictor(img, d)
+    face_descriptor = facerec.compute_face_descriptor(img, shape)
+    return face_descriptor
 
 def index_min(array, n): #массив и номер столбца
     array_new=[]
@@ -77,6 +84,9 @@ while True:
     
 	#определяем лица в видеопотоке
 	rects = detector(gray, 0)
+	#shape_cam1 = predictor(gray, rects[1])
+	#i=facerec.compute_face_descriptor(frame, shape_cam1)
+	print(rects)
 	#print(len(rects))
 	#Сценарий 1
 	if(len(faceList) == 0):
@@ -279,6 +289,7 @@ while True:
 
 
 	cv2.imshow("Frame", frame)
+
 
 	key = cv2.waitKey(1) & 0xFF
 
