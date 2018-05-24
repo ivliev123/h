@@ -60,9 +60,25 @@ while i < len(array_data):
 		
 #2
 	if(len(faceList) <= array_data[i][9]):
-		print('2-----------------------------2')
-		faceList_copy=copy.deepcopy(faceList)
 
+		print('2-----------------------------2')
+		deltat=[[0]*array_data[i][9]]*len(faceList) 
+		for tt in range(len(faceList)):
+			for kk in range(array_data[i][9]):
+				dt=array_data[i+kk][5]-faceList[tt][5]
+				deltat[tt][kk]=dt
+		tt=0
+		while tt <(len(faceList)):
+			n=0
+			for kk in range(array_data[i][9]):
+				
+				if deltat[tt][kk]>2:
+					n+=1
+			if n==array_data[i][9]:
+				del faceList[tt]		
+			tt+=1
+
+		metka=[False]*array_data[i][9]
 		index_array=[0]*len(faceList)
 		for f in range(len(faceList)):
 			
@@ -85,33 +101,25 @@ while i < len(array_data):
 			minimym, index = index_min(rectangle_now, 2)
 			index_array[f]=index
 			#обновление массива
-			
+			metka[index]=True
 					
-			faceList_copy[f][1]=rectangle_now[index][0]
-			faceList_copy[f][2]=rectangle_now[index][1]
-		
-			faceList_copy[f][5]=array_data[i+rect][5] # обновление времени
-		l=0
-		while l <(len(faceList)):
-			dt=faceList_copy[l][5]-faceList[l][5]
-			print('dt',dt)
-			if(dt<2):
-				#тут нужно сделать присвоение номера в array_data
-				array_data[i+index_array[l]][10]=faceList_copy[l][10]
-				faceList[l]=faceList_copy[l]
-			else:
-				del faceList[l]
-				del faceList_copy[l]
-			l+=1
+			faceList[f][1]=rectangle_now[index][0]
+			faceList[f][2]=rectangle_now[index][1]
+			array_data[i+index][10]=faceList[f][10]
+			faceList[f][5]=array_data[i+rect][5] # обновление времени
+			
+
 
 
 		for k in range(array_data[i][9]):
-			if (array_data[i+k][10]=="none"):
+			#if (array_data[i+k][10]=="none"):
+			if (metka[k]==False):
 				array_data[i+k][10]=faceCount
 				faceList.append(array_data[i+k])
-				#faceList[k][10]=faceCount
 				faceCount += 1
-		#i+=array_data[i][9]
+
+		for k in range(len(faceList)):
+			print('-----------------------',faceList[k][10])		
 #3
 	if(len(faceList) > array_data[i][9]):
 		print('3-----------------------------3')
@@ -224,7 +232,7 @@ for i in range(len(array_data)):
 
 
 for i in range(len(array_data)):
-	print(array_data[i][0],array_data[i][9],array_data[i][10])
+	print(array_data[i][0],array_data[i][9],array_data[i][10],array_data[i][5])
 #	print(array_data[i+1][5]-array_data[i][5])			
 print(len(array_data))
 
