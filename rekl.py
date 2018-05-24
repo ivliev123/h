@@ -80,7 +80,7 @@ while True:
 			start = time.time()
 			face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
 			print(start)
-			facedata=["none",x, y, w, h, start, face_descriptor,False,0]
+			facedata=["none",x, y, w, h, start, face_descriptor,False,0,len(rects),"none"]
 			with open(args["file"], args["metod"]) as f:
 				pickle.dump(facedata, f)
 			cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)

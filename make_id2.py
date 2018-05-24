@@ -52,7 +52,9 @@ for i in range(len(array_data)):
 			if (dist<=0.5 	):
 				array_data[k+i+1][0]=array_data[i][0]
 				#print('ID',array_data[k+i+1][0])
-		
+
+
+print(i)				
 				
 
 for i in range(len(array_data)):
@@ -61,7 +63,7 @@ for i in range(len(array_data)):
 	if (array_data[i][7]==False):
 		#если строка не обработана, то переменной ID_2 присваиваем id этой строки
 		ID_2=array_data[i][0]
-		array_data[i][7]=True
+		array_data[i][7]==True
 		print('ID===========',ID_2)
 
 		mass=[]
