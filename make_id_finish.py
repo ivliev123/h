@@ -9,7 +9,7 @@ import numpy as np
 import copy
 import time
 
-def index_min(array, n): #массив и номер столбца
+def index_min(array, n):
     array_new=[]
     for i in range(len(array)):
         array_new.append(array[i][n])
@@ -182,22 +182,15 @@ for i in range(len(array_data)):
 			new=[]
 			for ll in range(len(array_namber_k)):
 				new.append(array_namber_k[ll][8])
-			#print(new)
-			#if len(array_namber_k)>0:
-			#minimym, index = index_min(array_namber_k,8)
 			sort = new.sort()			
 			minimym	= new[int(round(len(new)/2))]		
-			if (minimym<=0.6):
-				#print('minim',minimym)
+			if (minimym<=0.6):+
 				for d in range(len(array_namber_k)):
-					#array_data[k+i+1][0]=array_data[i][0]
 					array_data[k+i+n_array[d]+1][0]=array_data[i][0]
-					
-					#array_namber_k[d][0]=array_data[i][0]
+
 
 for i in range(len(array_data)):
 	#проверка на метку
-	#метка означает что эта строка уже обработана (по времени)
 	if (array_data[i][7]==False):
 		#если строка не обработана, то переменной ID_2 присваиваем id этой строки
 		ID_2=array_data[i][0]
@@ -230,17 +223,11 @@ for i in range(len(array_data)):
 			array_finish_list.append(array_f[0])
 
 				
-				
-
-
-
-
 
 
 for i in range(len(array_data)):
 	print(array_data[i][0],array_data[i][9],array_data[i][10],array_data[i][5])
-#	print(array_data[i+1][5]-array_data[i][5])			
-print(len(array_data))
+
 
 
 for l in  range(len(array_finish_list)):
