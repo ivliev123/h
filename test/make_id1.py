@@ -105,3 +105,4 @@ for i in range(len(array_finish_list)):
 	d.write(s+ '\n')
 
 d.close()
+

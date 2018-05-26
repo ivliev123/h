@@ -1,6 +1,6 @@
 
-# python3 reklama.py  -f 'da.pickle' -m 'ab'
-# python3 reklama.py  -f 'da.pickle' -m 'ab' --picamera 1
+# python3 seve_deskriptor.py  -f 'da.pickle' -m 'ab'
+# python3 seve_deskriptor.py  -f 'da.pickle' -m 'ab' --picamera 1
 
 from skimage import io
 from imutils.video import VideoStream
