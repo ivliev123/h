@@ -38,7 +38,9 @@ for i in range(len(array_data)):
 		array_data[i][0]=0
 		ID=ID+1
 
-
+	if (array_data[i][0]=="none"):
+		array_data[i][0]=ID
+		ID=ID+1
 
 	for k in range(len(array_data)-i-1):
 
@@ -50,9 +52,7 @@ for i in range(len(array_data)):
 			if (dist<=0.5 	):
 				array_data[k+i+1][0]=array_data[i][0]
 				#print('ID',array_data[k+i+1][0])
-	if (array_data[i][0]=="none"):
-		array_data[i][0]=ID
-		ID=ID+1
+
 
 print(i)				
 				

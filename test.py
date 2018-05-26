@@ -168,10 +168,15 @@ for i in range(len(array_data)):
 					array_data[i+k+n+1][8]=dist
 					list_1=copy.deepcopy(array_data[k+i+n+1])
 					array_namber_k.append(list_1)
-			
+			new=[]
+			for ll in range(len(array_namber_k)):
+				new.append(array_namber_k[ll][8])
+			#print(new)
 			#if len(array_namber_k)>0:
-			minimym, index = index_min(array_namber_k,8)
-			if (minimym<=0.5):
+			#minimym, index = index_min(array_namber_k,8)
+			sort = new.sort()			
+			minimym	= new[int(round(len(new)/2))]		
+			if (minimym<=0.6):
 				print('minim',minimym)
 				for d in range(len(array_namber_k)):
 					#array_data[k+i+1][0]=array_data[i][0]
@@ -225,4 +230,17 @@ for i in range(len(array_data)):
 	print(array_data[i][0],array_data[i][9],array_data[i][10],array_data[i][5])
 #	print(array_data[i+1][5]-array_data[i][5])			
 print(len(array_data))
+
+
+for l in  range(len(array_finish_list)):
+	print()
+	print(array_finish_list[l])
+
+print(len(array_data))
+d = open(args["fileto"], args["metod"])
+for i in range(len(array_finish_list)):
+	s= str(array_finish_list[i][0]) +"  "+ str(array_finish_list[i][5]) +"  " + str(array_finish_list[i][7]) 
+	d.write(s+ '\n')
+
+d.close()
 
