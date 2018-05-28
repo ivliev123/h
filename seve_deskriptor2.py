@@ -64,34 +64,39 @@ args = vars(ap.parse_args())
 vs = VideoStream(usePiCamera=args["picamera"] > 0).start()
 time.sleep(2.0)
 
-
+i=0
+faceList=[]
 while True:
 	frame = vs.read() 
 	frame = imutils.resize(frame, width=600)
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    
+	
 	rects = detector(gray, 0)
-	i=0
 	if(len(rects) >= 0):
 		print(len(rects))
 		for rect in rects:
 			shape_cam = predictor(gray, rect)
 			shape = face_utils.shape_to_np(shape_cam)
-			(x, y, w, h) = face_utils.rect_to_bb(rect)
+			#(x, y, w, h) = face_utils.rect_to_bb(rect)
+			start = time.time()
+			for (x, y) in shape:
+				cv2.circle(frame, (x, y), 0, (0, 255, 255), -1)			
+			(x, y, w, h) = face_utils.rect_to_bb(rect)			
+			face = frame[y:y+h,x:x+w]
+			cv2.imwrite('face'+str(i)+'.jpg',face)
+			face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
+			faceList.append(face_descriptor)
 
-			if (x>0 and y>0 and x+h>600 and y+h>400):
-				i+=1
-				start = time.time()
-				face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
-				print(start)
-				#facedata=["none",x, y, w, h, start, face_descriptor,False,0,len(rects),"none"]
-				facedata=["none",x, y, w, h, start, face_descriptor,False,0,i,"none"]
-				with open(args["file"], args["metod"]) as f:
-					pickle.dump(facedata, f)
-				cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        			#for (x, y) in shape2:
-            			#	cv2.circle(frame, (x, y), 0, (0, 255, 255), -1)
-		
+			print(start)
+			
+			#facedata=["none",x, y, w, h, start, face_descriptor,False,0,len(rects),"none"]
+			#print (facedata)
+			#with open(args["file"], args["metod"]) as f:
+			#	pickle.dump(facedata, f)
+			cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        		#for (x, y) in shape2:
+            		#	cv2.circle(frame, (x, y), 0, (0, 255, 255), -1)
+
 
     
 	cv2.imshow("Frame", frame)
@@ -99,6 +104,11 @@ while True:
 	key = cv2.waitKey(1) & 0xFF
 	# if the `q` key was pressed, break from the loop
 	if key == ord("q"):
+		for i in range(len(faceList)-1):
+			dist=distance.euclidean(faceList[i][6],faceList[i+1][6])
+			
+
+			print(dist)
 		break
 
 # do a bit of cleanup

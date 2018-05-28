@@ -179,12 +179,13 @@ for i in range(len(array_data)):
 					array_data[i+k+n+1][8]=dist
 					list_1=copy.deepcopy(array_data[k+i+n+1])
 					array_namber_k.append(list_1)
-			new=[]
-			for ll in range(len(array_namber_k)):
-				new.append(array_namber_k[ll][8])
-			sort = new.sort()			
-			minimym	= new[int(round(len(new)/2))]		
-			if (minimym<=0.6):+
+			#new=[]
+			#for ll in range(len(array_namber_k)):
+			#	new.append(array_namber_k[ll][8])
+			#sort = new.sort()			
+			#minimym= new[int(round(len(new)/2))]		
+			minimym, index = index_min(array_namber_k, 8)
+			if (minimym<=0.5):
 				for d in range(len(array_namber_k)):
 					array_data[k+i+n_array[d]+1][0]=array_data[i][0]
 
