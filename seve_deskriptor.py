@@ -79,7 +79,7 @@ while True:
 			shape = face_utils.shape_to_np(shape_cam)
 			(x, y, w, h) = face_utils.rect_to_bb(rect)
 
-			if (x>0 and y>0 and x+h>600 and y+h>400):
+			if (x>0 and y>0 and x+h<600 and y+h<400):
 				i+=1
 				start = time.time()
 				face_descriptor= facerec.compute_face_descriptor(frame, shape_cam)
